@@ -26,7 +26,6 @@ namespace twozerofoureight
         public int Score
         {
             get { return score; }
-            set { score = value; }
         }
 
         public TwoZeroFourEightModel(int size)
