@@ -45,6 +45,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller.cs" />
+    <Compile Include="TwoZeroFourEightScoreView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TwoZeroFourEightScoreView.Designer.cs">
+      <DependentUpon>TwoZeroFourEightScoreView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Model.cs" />
     <Compile Include="View.cs" />
     <Compile Include="TwoZeroFourEightController.cs" />
@@ -57,6 +63,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TwoZeroFourEightModel.cs" />
+    <EmbeddedResource Include="TwoZeroFourEightScoreView.resx">
+      <DependentUpon>TwoZeroFourEightScoreView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TwoZeroFourEightView.resx">
       <DependentUpon>TwoZeroFourEightView.cs</DependentUpon>
     </EmbeddedResource>

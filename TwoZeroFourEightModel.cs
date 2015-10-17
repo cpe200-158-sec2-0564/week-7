@@ -12,6 +12,8 @@ namespace twozerofoureight
         protected int[,] board;
         protected Random rand;
         protected int score;
+        protected bool isEnd = false;           // Endgame indicator
+        
 
         public TwoZeroFourEightModel() : this(4)
         {
@@ -23,10 +25,16 @@ namespace twozerofoureight
             return board;
         }
 
+        public bool IsEnd
+        {
+            get { return isEnd; }
+        }                   // Endgame property
+
         public int Score
         {
             get { return score; }
         }
+
 
         public TwoZeroFourEightModel(int size)
         {
@@ -61,6 +69,7 @@ namespace twozerofoureight
 
         public void PerformDown()
         {
+            bool moved = false;                                                 // Movement check-------------------------
             int[] buffer;
             int pos;
             int[] rangeX = Enumerable.Range(0, boardSize).ToArray();
@@ -90,6 +99,7 @@ namespace twozerofoureight
                     {
                         buffer[j - 1] *= 2;
                         buffer[j] = 0;
+                        moved = true;                                           // Move occurred--------------------------
                     }
                 }
                 // shift left again
@@ -98,8 +108,9 @@ namespace twozerofoureight
                 {
                     if (buffer[j] != 0)
                     {
+                        if (board[pos, i] != buffer[j]) moved=true;             // Move occurred--------------------------
                         board[pos, i] = buffer[j];
-                        pos--;
+                        pos--;   
                     }
                 }
                 // copy back
@@ -108,12 +119,13 @@ namespace twozerofoureight
                     board[k, i] = 0;
                 }
             }
-            board = Random(board);
+            if (moved) board = Random(board);                                   // no move no random----------------------
             NotifyAll();
         }
 
         public void PerformUp()
         {
+            bool moved = false;
             int[] buffer;
             int pos;
 
@@ -142,6 +154,7 @@ namespace twozerofoureight
                     {
                         buffer[j - 1] *= 2;
                         buffer[j] = 0;
+                        moved = true;
                     }
                 }
                 // shift left again
@@ -150,6 +163,7 @@ namespace twozerofoureight
                 {
                     if (buffer[j] != 0)
                     {
+                        if (board[pos, i] != buffer[j]) moved = true;
                         board[pos, i] = buffer[j];
                         pos++;
                     }
@@ -160,12 +174,13 @@ namespace twozerofoureight
                     board[k, i] = 0;
                 }
             }
-            board = Random(board);
+            if (moved) board = Random(board);
             NotifyAll();
         }
 
         public void PerformRight()
         {
+            bool moved = false;
             int[] buffer;
             int pos;
 
@@ -196,6 +211,7 @@ namespace twozerofoureight
                     {
                         buffer[j - 1] *= 2;
                         buffer[j] = 0;
+                        moved = true;
                     }
                 }
                 // shift left again
@@ -204,6 +220,7 @@ namespace twozerofoureight
                 {
                     if (buffer[j] != 0)
                     {
+                        if (board[i, pos] != buffer[j]) moved = true;
                         board[i, pos] = buffer[j];
                         pos--;
                     }
@@ -214,12 +231,13 @@ namespace twozerofoureight
                     board[i, k] = 0;
                 }
             }
-            board = Random(board);
+            if (moved) board = Random(board);
             NotifyAll();
         }
 
         public void PerformLeft()
         {
+            bool moved = false;
             int[] buffer;
             int pos;
             int[] range = Enumerable.Range(0, boardSize).ToArray();
@@ -247,6 +265,7 @@ namespace twozerofoureight
                     {
                         buffer[j - 1] *= 2;
                         buffer[j] = 0;
+                        moved = true;
                     }
                 }
                 // shift left again
@@ -255,6 +274,7 @@ namespace twozerofoureight
                 {
                     if (buffer[j] != 0)
                     {
+                        if (board[i, pos] != buffer[j]) moved = true;
                         board[i, pos] = buffer[j];
                         pos++;
                     }
@@ -264,9 +284,31 @@ namespace twozerofoureight
                     board[i, k] = 0;
                 }
             }
-            board = Random(board);
+            if(moved) board = Random(board);
             NotifyAll();
         }
 
+        public void EndingScan()
+        {
+            if (!isEnd)
+            {
+                for (int i = 0; i != boardSize; i++)
+                    if (board[i, 0] != board[i, 1] && board[i, 1] != board[i, 2] && board[i, 2] != board[i, 3])   
+                    {//^ All tiles in i row are different
+                        if (board[0, i] != board[1, i] && board[1, i] != board[2, i] && board[2, i] != board[3, i])
+                        {//^ All tiles in i column are different
+                            if (i == boardSize - 1 && board[i, 0] != board[i, 1] && board[i, 1] != board[i, 2] && board[i, 2] != board[i, 3] && board[0, i] != board[1, i] && board[1, i] != board[2, i] && board[2, i] != board[3, i])
+                            {//^ i is equal to 'boardSize - 1' and all conditions above are true
+                                isEnd = true;               // All tiles are different! Game over!
+                                break;
+                            }
+                            else continue;
+                        }
+                        else break;
+                    }
+                    else break;
+            }
+        }
+        
     }
 }
